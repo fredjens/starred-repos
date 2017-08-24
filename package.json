@@ -35,9 +35,9 @@
   "scripts": {
     "frontend:dev": "react-scripts start",
     "frontend:build": "react-scripts build",
-    "frontend:start": "node ./src/frontend/server",
-    "backend:dev": "nodemon ./src/backend/start",
-    "backend:start": "node ./src/backend/start",
+    "frontend:start": "node ./src/frontend/server.js",
+    "backend:dev": "nodemon ./src/backend/start.js",
+    "backend:start": "node ./src/backend/start.js",
     "test": "react-scripts test --env=jsdom",
     "dev": "concurrently \"npm frontend:dev\" \"npm run backend:dev\"",
     "postinstall": "npm run frontend:build"
