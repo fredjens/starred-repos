@@ -16,7 +16,7 @@ const server = {
  * Stared repos
  */
 
-app.get('/starred', async (req, res) => {
+app.get('/backend/starred', async (req, res) => {
   const repos = await getStaredRepos();
   res.send(repos);
 });
@@ -25,7 +25,7 @@ app.get('/starred', async (req, res) => {
  * Readme
  */
 
-app.post('/readme', async (req, res) => {
+app.post('/backend/readme', async (req, res) => {
   const {
     repo = '',
     owner = '',
@@ -35,13 +35,19 @@ app.post('/readme', async (req, res) => {
   res.send(readme);
 });
 
+app.get('/backend', (req, res) => {
+  res.send('🏤 backend');
+});
+
+/**
+ * Frotnend
+ */
+
+app.use(express.static(`${__dirname}/../../build`));
+
 /**
  * Init
  */
-
-app.get('/', (req, res) => {
-  res.send('🏤 backend');
-});
 
 app.listen(server.port, () => {
   console.log(`🏤 backend-api listening to port ${server.port}`);

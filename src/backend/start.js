@@ -12,5 +12,4 @@ require('babel-register');
 /**
  * Initialize application
  */
-require('./backend-server');
-require('./frontend-server');
+require('./server');
