@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 import GithubAPI from 'github';
 
 const github = new GithubAPI();
