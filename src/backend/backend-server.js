@@ -40,7 +40,7 @@ app.post('/readme', async (req, res) => {
  */
 
 app.get('/', (req, res) => {
-  res.send('hello world');
+  res.send('🏤 backend');
 });
 
 app.listen(server.port, () => {

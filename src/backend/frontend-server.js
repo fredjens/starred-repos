@@ -8,7 +8,7 @@ const forceSsl = require('force-ssl-heroku');
 /**
  * Environment / configuration
  */
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 /**
  * Create our express app
