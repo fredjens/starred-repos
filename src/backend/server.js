@@ -1,7 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-const history = require('connect-history-api-fallback');
 const forceSsl = require('force-ssl-heroku');
 
 import { getStaredRepos, getRepoReadme } from './services';
