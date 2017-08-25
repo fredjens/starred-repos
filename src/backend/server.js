@@ -1,21 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-const forceSsl = require('force-ssl-heroku');
 
 import { getStaredRepos, getRepoReadme } from './services';
 
 const app = express();
-
 app.use(cors());
 app.use(bodyParser.json());
-
-/**
- * Force SSL in production
- */
-if (process.env.NODE_ENV === 'production') {
-  app.use(forceSsl);
-}
 
 const server = {
   port: process.env.PORT || 5000,
@@ -47,12 +38,6 @@ app.post('/backend/readme', async (req, res) => {
 app.get('/backend', (req, res) => {
   res.send('🏤 backend');
 });
-
-/**
- * Frotnend
- */
-
-app.use(express.static(`${__dirname}/../../build`));
 
 /**
  * Init
