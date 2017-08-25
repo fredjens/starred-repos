@@ -1,12 +1,22 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+const history = require('connect-history-api-fallback');
+const forceSsl = require('force-ssl-heroku');
 
 import { getStaredRepos, getRepoReadme } from './services';
 
 const app = express();
+
 app.use(cors());
 app.use(bodyParser.json());
+
+/**
+ * Force SSL in production
+ */
+if (process.env.NODE_ENV === 'production') {
+  app.use(forceSsl);
+}
 
 const server = {
   port: process.env.PORT || 5000,

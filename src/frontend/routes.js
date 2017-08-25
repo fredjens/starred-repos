@@ -3,13 +3,13 @@
 import React from 'react';
 import { Router, Route, IndexRoute } from 'react-router';
 import App from './components/App';
-import { browserHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 
 import Home from './containers/Home';
 import Repo from './containers/Repo';
 
 const Routes = (props) => (
-  <Router history={browserHistory}>
+  <Router history={hashHistory}>
     <Route path="/" component={App}>
       <Route component={Home}>
         <IndexRoute />
