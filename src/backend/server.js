@@ -16,7 +16,7 @@ const server = {
  * Stared repos
  */
 
-app.get('/backend/starred', async (req, res) => {
+app.get('/starred', async (req, res) => {
   const repos = await getStaredRepos();
   res.send(repos);
 });
@@ -25,7 +25,7 @@ app.get('/backend/starred', async (req, res) => {
  * Readme
  */
 
-app.post('/backend/readme', async (req, res) => {
+app.post('/readme', async (req, res) => {
   const {
     repo = '',
     owner = '',
@@ -35,7 +35,7 @@ app.post('/backend/readme', async (req, res) => {
   res.send(readme);
 });
 
-app.get('/backend', (req, res) => {
+app.get('/', (req, res) => {
   res.send('🏤 backend');
 });
 
@@ -44,5 +44,5 @@ app.get('/backend', (req, res) => {
  */
 
 app.listen(server.port, () => {
-  console.log(`🏤 backend-api listening to port ${server.port}`);
+  console.log(`🏤 backend listening to port ${server.port}`);
 });
