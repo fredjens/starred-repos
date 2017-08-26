@@ -39,7 +39,7 @@
     "test": "react-scripts test --env=jsdom",
     "dev": "concurrently \"npm frontend:dev\" \"npm run backend:dev\"",
     "postinstall": "npm run frontend:build",
-    "start": "react-scripts start"
+    "start": "node ./scripts/start.js"
   },
   "babel": {
     "presets": [
