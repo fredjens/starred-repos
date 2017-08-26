@@ -6,9 +6,9 @@ const github = new GithubAPI();
  * Stared repos
  */
 
-export async function getStaredRepos() {
+export async function getStaredRepos(username) {
   const repos = await github.activity.getStarredReposForUser({
-    username: process.env.GITHUB_USERNAME,
+    username: username,
     per_page: 100,
   });
 

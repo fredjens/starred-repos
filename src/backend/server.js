@@ -16,8 +16,11 @@ const server = {
  * Stared repos
  */
 
-app.get('/starred', async (req, res) => {
-  const repos = await getStaredRepos();
+app.get('/starred/:user', async (req, res) => {
+  console.log('query', req.params);
+  const { user } = req.params;
+
+  const repos = await getStaredRepos(user);
   res.send(repos);
 });
 

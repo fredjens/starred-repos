@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import autoBind from 'react-autobind';
+import { connect } from 'react-redux';
 
 import CountUp from 'react-countup';
 import ReactList from 'react-list';
@@ -19,8 +20,12 @@ class App extends Component {
     }
   }
 
-  async getStaredRepos() {
-    const repos = await getStaredRepos();
+  async getStaredRepos(username) {
+    if (!username) {
+      console.log('no username');
+    }
+
+    const repos = await getStaredRepos(username);
 
     this.setState({
       loading: false,
@@ -29,7 +34,17 @@ class App extends Component {
   };
 
   componentWillMount() {
-    this.getStaredRepos();
+    console.log('mount', this.props.username);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { username } = nextProps;
+    console.log(nextProps);
+
+    if (username) {
+      console.log('username', username);
+      this.getStaredRepos(username);
+    }
   };
 
   handleRouteToRepo(repo) {
@@ -92,4 +107,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  username: state.collections.github,
+});
+
+export default connect(
+  mapStateToProps,
+)(App);

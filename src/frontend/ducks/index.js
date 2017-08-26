@@ -46,6 +46,11 @@ export const addUserToDatabase = (payload) => {
 };
 
 /**
+ * Selectors
+ */
+
+
+/**
  * Generic firebase update action use by the Store
  */
 

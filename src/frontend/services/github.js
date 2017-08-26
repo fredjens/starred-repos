@@ -1,7 +1,7 @@
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
-export function getStaredRepos() {
-  const url = `${baseUrl}/starred`;
+export function getStaredRepos(user) {
+  const url = `${baseUrl}/starred/${user}`;
 
   return fetch(url)
   .then(res => res.json())
