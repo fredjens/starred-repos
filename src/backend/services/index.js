@@ -1,6 +1,13 @@
 import GithubAPI from 'github';
 
-const github = new GithubAPI();
+const github = new GithubAPI({
+  debug: true,
+});
+
+github.authenticate({
+    type: "oauth",
+    token: process.env.GITHUB_TOKEN,
+});
 
 /**
  * Stared repos

@@ -6,6 +6,7 @@ import CountUp from 'react-countup';
 import ReactList from 'react-list';
 import { browserHistory } from 'react-router';
 import classNames from 'classnames';
+import { includes, values } from 'lodash';
 
 import Loading from '../components/Loading';
 import { getStaredRepos } from '../services/github';
@@ -17,32 +18,34 @@ class App extends Component {
     this.state = {
       loading: true,
       repos: [],
+      selected: '',
     }
   }
 
   async getStaredRepos(username) {
+    const { repos = []} = this.state;
+
     if (!username) {
       console.log('no username');
     }
 
-    const repos = await getStaredRepos(username);
+    if (repos.length > 0) {
+      return;
+    }
+
+    const userStarredRepos = await getStaredRepos(username);
 
     this.setState({
       loading: false,
-      repos,
+      repos: userStarredRepos,
+      filteredRepos: userStarredRepos,
     })
   };
 
-  componentWillMount() {
-    console.log('mount', this.props.username);
-  }
-
   componentWillReceiveProps(nextProps) {
     const { username } = nextProps;
-    console.log(nextProps);
 
     if (username) {
-      console.log('username', username);
       this.getStaredRepos(username);
     }
   };
@@ -51,10 +54,32 @@ class App extends Component {
     browserHistory.push(`/${repo}`);
   }
 
+  handleSelectCategory(key) {
+    const { repos = [] } = this.state;
+    const { categories } = this.props;
+
+    if (key === 'reset') {
+      return this.setState({
+        selected: null,
+        filteredRepos: repos,
+      });
+    }
+
+    const filteredRepos = repos.filter(repo =>
+      includes(categories[key].repos, repo.id)
+    );
+
+    this.setState({
+      selected: key,
+      filteredRepos,
+    });
+  }
+
   renderItem(index, key) {
     const { children } = this.props;
-    const { repos = []} = this.state;
-    const repo = repos[index];
+    const { repos = [], selected, filteredRepos } = this.state;
+
+    const repo = filteredRepos[index] || {};
 
     const {
       full_name: name = '',
@@ -71,7 +96,7 @@ class App extends Component {
 
     return (
       <button key={index} className={itemClass} style={{
-        animationDelay: `${index * 4}ms`,
+        animationDelay: `${index * 40}ms`,
       }} onClick={() => this.handleRouteToRepo(name)}>
         <h2 className="title">{name.split('/')[1]}</h2>
         <h3 className="star">⭐ <CountUp start={0} end={stars} /></h3>
@@ -84,8 +109,9 @@ class App extends Component {
   }
 
   render() {
-    const { loading, repos = [] } = this.state;
-    const { children } = this.props;
+    const { loading, filteredRepos = [], repos } = this.state;
+    const { children, categories = [], username, name } = this.props;
+    console.log('propts', filteredRepos.length);
 
     const Repos = (
       <div className="App">
@@ -94,9 +120,22 @@ class App extends Component {
           width: children ? '30%' : '100%',
           padding: children ? '4%' : '8%',
         }}>
+          <h3>Hi {name}!</h3>
+          <p>You got {repos.length} starred repos</p>
+          <button onClick={() => this.handleSelectCategory('unsorted')}>
+            Unsorted ({repos.length})
+          </button>
+          {values(categories).map(({name, key, repos = []}, index) =>
+            <button onClick={() => this.handleSelectCategory(key)} key={index}>
+              {name} ({repos.length})
+            </button>
+          )}
+          <button onClick={() => this.handleSelectCategory('reset')}>
+            Reset
+          </button>
           <ReactList
             itemRenderer={this.renderItem}
-            length={repos.length}
+            length={filteredRepos.length}
             type='uniform'
           />
         </div>
@@ -109,6 +148,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => ({
   username: state.collections.github,
+  name: state.collections.name,
+  categories: state.collections.categories,
 });
 
 export default connect(

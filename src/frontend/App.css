@@ -57,6 +57,7 @@ a {
 	padding-bottom: 10px;
   box-sizing: border-box;
   position: relative;
+  opacity: 0;
   animation: apearIn ease-out 600ms forwards;
   width: 47%;
   margin-right: 4%;
