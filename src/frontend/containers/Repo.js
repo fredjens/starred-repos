@@ -25,7 +25,7 @@ class Repo extends Component {
 
     this.setState({
       loading: false,
-      readme: atob(readme),
+      readme: atob(readme.content),
     });
   }
 
@@ -46,6 +46,7 @@ class Repo extends Component {
   render() {
     const { params } = this.props;
     const { loading, readme = '' } = this.state;
+    console.log('props', readme);
 
     const Repo = (
       <div className="view">

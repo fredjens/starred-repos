@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { safePromise } from 'unexceptional';
 
 import { getStaredRepos, getRepoReadme } from './services';
 
@@ -9,7 +10,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const server = {
-  port: process.env.PORT || 5000,
+  port: process.env.PORT || 5050,
 };
 
 /**
@@ -20,7 +21,13 @@ app.get('/starred/:user', async (req, res) => {
   console.log('query', req.params);
   const { user } = req.params;
 
-  const repos = await getStaredRepos(user);
+  const [err, repos] = await safePromise(getStaredRepos(user));
+
+  if (err) {
+    console.log('err', err);
+    res.end();
+  }
+
   res.send(repos);
 });
 
@@ -34,7 +41,13 @@ app.post('/readme', async (req, res) => {
     owner = '',
   } = req.body;
 
-  const readme = await getRepoReadme({ repo, owner });
+  const [err, readme] = await safePromise(getRepoReadme({ repo, owner }));
+
+  if (err) {
+    console.log('err', err);
+    res.end(end);
+  }
+
   res.send(readme);
 });
 

@@ -111,7 +111,6 @@ class App extends Component {
   render() {
     const { loading, filteredRepos = [], repos } = this.state;
     const { children, categories = [], username, name } = this.props;
-    console.log('propts', filteredRepos.length);
 
     const Repos = (
       <div className="App">

@@ -1,25 +1,22 @@
+import axios from 'axios';
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export function getStaredRepos(user) {
   const url = `${baseUrl}/starred/${user}`;
 
-  return fetch(url)
-  .then(res => res.json())
-  .then(json => json.data);
+  return axios.get(url)
+  .then(res => res.data.data)
+  .catch(err => console.log(err));
 }
 
 
 export function getRepoReadme({ owner, repo }) {
   const url = `${baseUrl}/readme`;
 
-  return fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    method: "POST",
-    body: JSON.stringify({ owner, repo })
+  return axios.post(url, {
+    owner,
+    repo,
   })
-  .then(res => res.json())
-  .then(json => json.data.content);
+  .then(res => res.data.data)
+  .catch(err => console.log(err));
 }

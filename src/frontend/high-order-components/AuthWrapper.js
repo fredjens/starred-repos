@@ -21,14 +21,6 @@ class AuthWrapper extends Component {
       }
     }
 
-    componentWillMount() {
-      this.checkAuthenication();
-    }
-
-    componenDidUpate() {
-      this.checkAuthenication();
-    }
-
     checkAuthenication() {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
@@ -38,6 +30,7 @@ class AuthWrapper extends Component {
         }
 
         if (!user) {
+          console.log('run authenication');
           this.setState({ authenticated: false });
           this.authenticateUser();
         }
@@ -50,7 +43,7 @@ class AuthWrapper extends Component {
       console.log('starting authenication');
       const provider = new firebase.auth.GithubAuthProvider();
 
-      const user = await firebase.auth().signInWithPopup(provider);
+      const user = await firebase.auth().signInWithRedirect(provider);
       startFirebase(user.user.uid);
 
       addUserToDatabase(user);
@@ -58,6 +51,14 @@ class AuthWrapper extends Component {
       this.setState({
         authenticated: true,
       });
+    }
+
+    componentWillMount() {
+      this.checkAuthenication();
+    }
+
+    componenDidUpate() {
+      this.checkAuthenication();
     }
 
     render() {

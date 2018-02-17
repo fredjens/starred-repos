@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.17.1",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.0.20",
     "babel-loader": "^6.0.1",
@@ -33,7 +34,8 @@
     "react-router-redux": "^4.0.8",
     "react-scripts": "1.0.7",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "unexceptional": "^1.0.0"
   },
   "scripts": {
     "frontend:dev": "react-scripts start",
@@ -51,8 +53,5 @@
       "es2015",
       "stage-2"
     ]
-  },
-  "engines": {
-    "node": "8.1.x"
   }
 }
