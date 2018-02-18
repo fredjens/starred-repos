@@ -9,15 +9,7 @@ export const NAME = '@@firebase';
 /**
  * Action types
  */
-export const UPDATE = 'UPDATE';
-
-/**
- * Commands
- */
-const writeToFirebase = (collection, reducer) => {
-  console.log('write to firebase');
-  firebase.database().ref(collection).transaction(reducer);
-}
+export const INITIAL_DATA = `${NAME}/INITIAL_DATA`;
 
 /**
 * Initial state
@@ -28,7 +20,7 @@ const initialState = {};
  * Selectors
  */
 export const getState = (state) => state[NAME];
-export const getUsername = flow(getState, (state) => state.github);
+export const getUsername = flow(getState, state => state.github);
 export const getName = flow(getState, (state) => state.name);
 export const getCategories = flow(getState, (state) => state.categories);
 
@@ -37,8 +29,10 @@ export const getCategories = flow(getState, (state) => state.categories);
  */
 export const updateFirebase = (collection) => {
   return {
-    type: UPDATE,
-    collection,
+    type: INITIAL_DATA,
+    payload: {
+      collection,
+    },
   }
 }
 
@@ -47,10 +41,10 @@ export const updateFirebase = (collection) => {
  */
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case UPDATE:
+    case INITIAL_DATA:
       return {
         ...state,
-        ...action.collection,
+        ...action.payload.collection,
       };
     default:
       return state;

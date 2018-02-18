@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import autoBind from 'react-autobind';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import CountUp from 'react-countup';
 import ReactList from 'react-list';
@@ -13,57 +14,20 @@ import { getStaredRepos } from '../services/github';
 import {
   getUsername,
   getName,
-  getCategories
+  getCategories,
 } from '../ducks/firebase';
 
+import {
+  getRepos,
+  getLoading,
+} from '../ducks/github';
 
-class App extends Component {
+class Home extends Component {
   constructor(props) {
     super(props);
     autoBind(this);
     this.state = {
-      loading: true,
-      repos: [],
       selected: '',
-    }
-  }
-
-  async getStaredRepos(username) {
-    console.log('yo', username);
-    const { repos = []} = this.state;
-
-    if (!username) {
-      console.log('no username');
-    }
-
-    if (repos.length > 0) {
-      return;
-    }
-
-    const userStarredRepos = await getStaredRepos(username);
-
-    this.setState({
-      loading: false,
-      repos: userStarredRepos,
-      filteredRepos: userStarredRepos,
-    })
-  };
-
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
-    const { username } = nextProps;
-
-    if (username) {
-      this.getStaredRepos(username);
-    }
-  };
-
-  componentWillMount() {
-    console.log(this.props);
-    const { username } = this.props;
-
-    if (username) {
-      this.getStaredRepos(username);
     }
   }
 
@@ -72,8 +36,7 @@ class App extends Component {
   }
 
   handleSelectCategory(key) {
-    const { repos = [] } = this.state;
-    const { categories } = this.props;
+    const { repos = [], categories } = this.props;
 
     if (key === 'reset') {
       return this.setState({
@@ -93,10 +56,10 @@ class App extends Component {
   }
 
   renderItem(index, key) {
-    const { children } = this.props;
-    const { repos = [], selected, filteredRepos } = this.state;
+    const { children, repos = [] } = this.props;
+    const { selected, filteredRepos } = this.state;
 
-    const repo = filteredRepos[index] || {};
+    const repo = repos[index] || {};
 
     const {
       full_name: name = '',
@@ -107,49 +70,43 @@ class App extends Component {
     } = repo;
 
     return (
-      <button key={index} style={{
+      <div key={index} style={{
         animationDelay: `${index * 40}ms`,
       }} onClick={() => this.handleRouteToRepo(name)}>
         <h2 className="title">{name.split('/')[1]}</h2>
         <h3 className="star">⭐ <CountUp start={0} end={stars} /></h3>
-        {
-          !children &&
-          <p>{description}</p>
-        }
-      </button>
+        {!children && <p>{description}</p>}
+      </div>
     );
   }
 
   render() {
-    const { loading, filteredRepos = [], repos } = this.state;
-    const { children, categories = [], username, name } = this.props;
+    const { filteredRepos = [] } = this.state;
+    const { repos, loading, children, categories = [], username, name } = this.props;
+
+    console.log(this.props);
 
     const Repos = (
-      <div className="App">
+      <div>
         {children}
-        <div className="wrapper" style={{
-          width: children ? '30%' : '100%',
-          padding: children ? '4%' : '8%',
-        }}>
-          <h3>Hi {name}!</h3>
-          <p>You got {repos.length} starred repos</p>
-          <button onClick={() => this.handleSelectCategory('unsorted')}>
-            Unsorted ({repos.length})
+        <h3>Hi {name}!</h3>
+        <p>You got {repos.length} starred repos</p>
+        <button onClick={() => this.handleSelectCategory('unsorted')}>
+          Unsorted ({repos.length})
+        </button>
+        {values(categories).map(({name, key, repos = []}, index) =>
+          <button onClick={() => this.handleSelectCategory(key)} key={index}>
+            {name} ({repos.length})
           </button>
-          {values(categories).map(({name, key, repos = []}, index) =>
-            <button onClick={() => this.handleSelectCategory(key)} key={index}>
-              {name} ({repos.length})
-            </button>
-          )}
-          <button onClick={() => this.handleSelectCategory('reset')}>
-            Reset
-          </button>
-          <ReactList
-            itemRenderer={this.renderItem}
-            length={filteredRepos.length}
-            type='uniform'
-          />
-        </div>
+        )}
+        <button onClick={() => this.handleSelectCategory('reset')}>
+          Reset
+        </button>
+        <ReactList
+          itemRenderer={this.renderItem}
+          length={repos.length}
+          type='uniform'
+        />
       </div>
     );
 
@@ -161,8 +118,11 @@ const mapStateToProps = (state) => ({
   username: getUsername(state),
   name: getName(state),
   categories: getCategories(state),
+  repos: getRepos(state),
+  loading: getLoading(state),
 });
+
 
 export default connect(
   mapStateToProps,
-)(App);
+)(Home);

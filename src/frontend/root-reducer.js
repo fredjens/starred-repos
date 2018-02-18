@@ -13,6 +13,7 @@ import { routerReducer as routing } from 'react-router-redux';
  */
 import firebase, { NAME as firebaseName } from './ducks/firebase';
 import authentication, { NAME as authenicationName } from './ducks/authentication';
+import github, { NAME as githubName } from './ducks/github';
 
 /**
  * Create combined reducer
@@ -20,5 +21,6 @@ import authentication, { NAME as authenicationName } from './ducks/authenticati
 export default combineReducers({
   [firebaseName]: firebase,
   [authenicationName]: authentication,
+  [githubName]: github,
   routing,
 });

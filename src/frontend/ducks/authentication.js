@@ -6,7 +6,7 @@ import { flow } from 'lodash';
 /**
  * Feature name
  */
-export const NAME = '@@global/auth';
+export const NAME = '@@auth';
 
 /**
  * Action types

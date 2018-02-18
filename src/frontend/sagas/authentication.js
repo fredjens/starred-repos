@@ -1,9 +1,7 @@
 import { call, put, fork, take, cancel, all } from 'redux-saga/effects';
 import { safePromise } from 'unexceptional';
-import firebase from 'firebase';
-import { startFirebase } from '../services/firebase';
+import { startFirebase, authenticate, provider } from '../services/firebase';
 import { addUserToDatabase } from '../ducks/firebase';
-import config from '../config';
 import store from '../store';
 
 /**
@@ -14,6 +12,7 @@ import {
   AUTHENICATION_CHECK,
   LOGIN_REQUEST,
   LOGIN_ERROR,
+  LOGIN_SUCCESS,
   LOGOUT,
   loginRequest,
   loginError,
@@ -21,18 +20,30 @@ import {
   logout,
 } from '../ducks/authentication';
 
-/**
- * Firebase authentication provider
- */
+import {
+  loadRepos,
+} from '../ducks/github';
 
-firebase.initializeApp(config);
-const provider = new firebase.auth.GithubAuthProvider();
+import { 
+  INITIAL_DATA,
+} from '../ducks/firebase';
 
 /**
  * Sagas
  */
+
+
+function* success() {
+  while (true) {
+    const user = yield take(LOGIN_SUCCESS);
+    yield call(startFirebase, user.payload.user.uid);
+    yield take(INITIAL_DATA);
+    yield put(loadRepos());
+  }
+}
+
 function* authorize() {
-  const [err, user] = yield call(firebase.auth().signInWithRedirect(provider));
+  const [err, user] = yield call(authenticate().signInWithRedirect(provider));
 
   if (err || !user) {
     console.log('ERR', err);
@@ -40,7 +51,6 @@ function* authorize() {
   }
 
   yield put(loginSuccess(user));
-  yield call(startFirebase, user.uid, firebase);
   return user;
 }
 
@@ -48,7 +58,6 @@ function* loginFlow() {
   while (true) {
     yield take(LOGIN_REQUEST);
     const task = yield fork(authorize);
-
     const action = yield take([LOGOUT, LOGIN_ERROR]);
     yield cancel(task);
   }
@@ -58,9 +67,8 @@ function* authFlow() {
   while (true) {
     yield take(AUTHENICATION_CHECK);
 
-    yield all(firebase.auth().onAuthStateChanged(user => {
+    yield all(authenticate().onAuthStateChanged(user => {
       if (user) {
-        startFirebase(user.uid, firebase);
         return store.dispatch(loginSuccess(user));
       }
 
@@ -72,9 +80,10 @@ function* authFlow() {
 /**
  * Main saga that kicks everything off
  */
-export default function* rootSaga() {
+export default function* authenticationSaga() {
   yield all([
     call(authFlow),
     call(loginFlow),
+    call(success),
   ]);
 }
