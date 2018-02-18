@@ -1,5 +1,5 @@
 import store from '../store';
-import { updateFirebase } from '../ducks';
+import { updateFirebase } from '../ducks/collections';
 
 export function startFirebase(ref, firebase) {
   const database = firebase.database();

@@ -32,9 +32,9 @@
     "react-redux": "^5.0.6",
     "react-router": "^3.0.0",
     "react-router-redux": "^4.0.8",
-    "react-scripts": "1.0.7",
+    "react-scripts": "1.1.1",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0",
+    "redux-saga": "^0.16.0",
     "unexceptional": "^1.0.0"
   },
   "scripts": {

@@ -6,7 +6,7 @@ import config from '../config';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addUserToDatabase } from '../ducks';
+import { addUserToDatabase } from '../ducks/collections';
 
 import { startFirebase } from '../services/firebase';
 

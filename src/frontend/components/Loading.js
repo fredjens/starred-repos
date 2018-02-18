@@ -3,9 +3,7 @@ import LoadingIcon from '../components/LoadingIcon';
 
 const Loading = (props) => {
   return (
-    <div className="loading-wrapper" style={{
-      color: props.color,
-    }}>
+    <div>
       <h1>
         Fetching from Github
         <LoadingIcon />

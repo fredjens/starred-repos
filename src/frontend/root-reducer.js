@@ -11,11 +11,14 @@ import { routerReducer as routing } from 'react-router-redux';
 /**
  * Import global / shared reducers
  */
-import collections from './ducks';
+import collections from './ducks/collections';
+import authentication from './ducks/authentication';
+
 /**
  * Create combined reducer
  */
 export default combineReducers({
   collections,
+  authentication,
   routing,
 });

@@ -46,7 +46,6 @@ class Repo extends Component {
   render() {
     const { params } = this.props;
     const { loading, readme = '' } = this.state;
-    console.log('props', readme);
 
     const Repo = (
       <div className="view">

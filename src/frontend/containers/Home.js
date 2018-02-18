@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import CountUp from 'react-countup';
 import ReactList from 'react-list';
 import { browserHistory } from 'react-router';
-import classNames from 'classnames';
 import { includes, values } from 'lodash';
 
 import Loading from '../components/Loading';
@@ -78,6 +77,7 @@ class App extends Component {
   renderItem(index, key) {
     const { children } = this.props;
     const { repos = [], selected, filteredRepos } = this.state;
+    console.log(repos);
 
     const repo = filteredRepos[index] || {};
 
@@ -89,13 +89,8 @@ class App extends Component {
       stargazers_count: stars = '',
     } = repo;
 
-    const itemClass = classNames({
-      'item': !children,
-      'item-small': children,
-    });
-
     return (
-      <button key={index} className={itemClass} style={{
+      <button key={index} style={{
         animationDelay: `${index * 40}ms`,
       }} onClick={() => this.handleRouteToRepo(name)}>
         <h2 className="title">{name.split('/')[1]}</h2>
