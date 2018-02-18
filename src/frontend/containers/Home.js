@@ -10,6 +10,13 @@ import { includes, values } from 'lodash';
 import Loading from '../components/Loading';
 import { getStaredRepos } from '../services/github';
 
+import {
+  getUsername,
+  getName,
+  getCategories
+} from '../ducks/firebase';
+
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +29,7 @@ class App extends Component {
   }
 
   async getStaredRepos(username) {
+    console.log('yo', username);
     const { repos = []} = this.state;
 
     if (!username) {
@@ -42,12 +50,22 @@ class App extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
     const { username } = nextProps;
 
     if (username) {
       this.getStaredRepos(username);
     }
   };
+
+  componentWillMount() {
+    console.log(this.props);
+    const { username } = this.props;
+
+    if (username) {
+      this.getStaredRepos(username);
+    }
+  }
 
   handleRouteToRepo(repo) {
     browserHistory.push(`/${repo}`);
@@ -77,7 +95,6 @@ class App extends Component {
   renderItem(index, key) {
     const { children } = this.props;
     const { repos = [], selected, filteredRepos } = this.state;
-    console.log(repos);
 
     const repo = filteredRepos[index] || {};
 
@@ -141,9 +158,9 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  username: state.collections.github,
-  name: state.collections.name,
-  categories: state.collections.categories,
+  username: getUsername(state),
+  name: getName(state),
+  categories: getCategories(state),
 });
 
 export default connect(

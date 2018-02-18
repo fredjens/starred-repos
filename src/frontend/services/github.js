@@ -2,6 +2,7 @@ import axios from 'axios';
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export function getStaredRepos(user) {
+  console.log('starred', user);
   const url = `${baseUrl}/starred/${user}`;
 
   return axios.get(url)

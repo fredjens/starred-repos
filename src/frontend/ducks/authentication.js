@@ -11,6 +11,7 @@ export const NAME = '@@global/auth';
 /**
  * Action types
  */
+export const AUTHENICATION_CHECK = `${NAME}/AUTHENICATION_CHECK`;
 export const LOGIN_REQUEST = `${NAME}/LOGIN_REQUEST`;
 export const LOGIN_SUCCESS = `${NAME}/LOGIN_SUCCESS`;
 export const LOGIN_ERROR = `${NAME}/LOGIN_ERROR`;
@@ -26,6 +27,7 @@ const initialState = {
   isLoggingIn: false,
   isAuthenticated: false,
   loginError: null,
+  user: {},
 };
 
 /**
@@ -55,6 +57,7 @@ export default function reducer(state = initialState, action = {}) {
       isLoggingIn: false,
       isAuthenticated: true,
       loginError: null,
+      user: action.payload.user,
     };
 
     case LOGIN_ERROR:
@@ -89,8 +92,13 @@ export function loginRequest({ username, password, application } = {}) {
   };
 }
 
-export function loginSuccess() {
-  return { type: LOGIN_SUCCESS };
+export function loginSuccess(user) {
+  return {
+    type: LOGIN_SUCCESS,
+    payload: {
+      user,
+    },
+  };
 }
 
 export function loginError(error) {
@@ -99,4 +107,8 @@ export function loginError(error) {
 
 export function logout() {
   return { type: LOGOUT };
+}
+
+export function checkAuthentication() {
+  return { type: AUTHENICATION_CHECK };
 }

@@ -1,80 +1,47 @@
 import React, { Component } from 'react';
 import autoBind from 'react-autobind';
 
-import firebase from 'firebase';
-import config from '../config';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addUserToDatabase } from '../ducks/collections';
 
-import { startFirebase } from '../services/firebase';
-
-firebase.initializeApp(config);
+import {
+  getAuthStatus,
+  checkAuthentication,
+} from '../ducks/authentication';
 
 class AuthWrapper extends Component {
-    constructor(props) {
-      super(props);
-      autoBind(this);
-      this.state = {
-        authenticated: false,
-      }
+  checkAuth() {
+    const {  authenticated, checkAuthentication } = this.props;
+
+    if (!authenticated) {
+      checkAuthentication();
     }
+  }
 
-    checkAuthenication() {
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          console.log('signed in', user);
-          this.setState({ authenticated: true });
-          startFirebase(user.uid, firebase);
-        }
+  componentWillMount() {
+    this.checkAuth();
+  }
 
-        if (!user) {
-          console.log('run authenication');
-          this.setState({ authenticated: false });
-          this.authenticateUser();
-        }
-      });
-    }
+  componentDidUpdate() {
+    this.checkAuth();
+  }
 
-    async authenticateUser() {
-      const { addUserToDatabase } = this.props;
-
-      console.log('starting authenication');
-      const provider = new firebase.auth.GithubAuthProvider();
-
-      const user = await firebase.auth().signInWithRedirect(provider);
-      startFirebase(user.user.uid);
-
-      addUserToDatabase(user);
-
-      this.setState({
-        authenticated: true,
-      });
-    }
-
-    componentWillMount() {
-      this.checkAuthenication();
-    }
-
-    componenDidUpate() {
-      this.checkAuthenication();
-    }
-
-    render() {
-      const { authenticated } = this.state;
-      const { children } = this.props;
-
-      return authenticated ? children : (<div>unauthorized</div>);
-    }
-  };
+  render() {
+    const { authenticated, children } = this.props;
+    return authenticated ? children : <div>unauthorized</div>;
+  }
+};
 
 
-const mapDispatchToProps =  (dispatch) => bindActionCreators({
-  addUserToDatabase,
+const mapStateToProps = state => ({
+  authenticated: getAuthStatus(state),
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  checkAuthentication,
 }, dispatch);
 
 export default connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps,
 )(AuthWrapper);
