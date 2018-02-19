@@ -12,10 +12,6 @@ class Repo extends Component {
   constructor(props) {
     super(props);
     autoBind(this);
-    this.state = {
-      loading: false,
-      readme: '',
-    }
   }
 
   async getReadme({ repo, owner }) {

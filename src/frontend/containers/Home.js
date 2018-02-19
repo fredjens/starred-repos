@@ -26,38 +26,15 @@ class Home extends Component {
   constructor(props) {
     super(props);
     autoBind(this);
-    this.state = {
-      selected: '',
-    }
   }
 
   handleRouteToRepo(repo) {
     browserHistory.push(`/${repo}`);
   }
 
-  handleSelectCategory(key) {
-    const { repos = [], categories } = this.props;
-
-    if (key === 'reset') {
-      return this.setState({
-        selected: null,
-        filteredRepos: repos,
-      });
-    }
-
-    const filteredRepos = repos.filter(repo =>
-      includes(categories[key].repos, repo.id)
-    );
-
-    this.setState({
-      selected: key,
-      filteredRepos,
-    });
-  }
 
   renderItem(index, key) {
     const { children, repos = [] } = this.props;
-    const { selected, filteredRepos } = this.state;
 
     const repo = repos[index] || {};
 
@@ -81,8 +58,8 @@ class Home extends Component {
   }
 
   render() {
-    const { filteredRepos = [] } = this.state;
-    const { repos, loading, children, categories = [], username, name } = this.props;
+    const { repos, loading, children, categories = [], name } = this.props;
+    console.log(repos);
 
     console.log(this.props);
 
